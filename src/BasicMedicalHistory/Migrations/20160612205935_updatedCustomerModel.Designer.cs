@@ -8,9 +8,10 @@ using BasicMedicalHistory.Models;
 namespace BasicMedicalHistory.Migrations
 {
     [DbContext(typeof(BmhContext))]
-    partial class BmhContextModelSnapshot : ModelSnapshot
+    [Migration("20160612205935_updatedCustomerModel")]
+    partial class updatedCustomerModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")
@@ -34,18 +35,6 @@ namespace BasicMedicalHistory.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Allergy");
-                });
-
-            modelBuilder.Entity("BasicMedicalHistory.Models.BloodType", b =>
-                {
-                    b.Property<int>("BloodTypeId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("BloodTypeName");
-
-                    b.HasKey("BloodTypeId");
-
-                    b.ToTable("BloodType");
                 });
 
             modelBuilder.Entity("BasicMedicalHistory.Models.Customer", b =>
