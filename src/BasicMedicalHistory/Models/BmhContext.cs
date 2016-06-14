@@ -18,6 +18,6 @@ namespace BasicMedicalHistory.Models
         public DbSet<Medication> Medication { get; set; }
         public DbSet<Insurance> Insurance { get; set; }
         public DbSet<Physician> Physician { get; set; }
-        public DbSet<BloodType> BloodType { get; set; }
+        public DbSet<CustomerMed> CustomerMed { get; set; }
     }
 }

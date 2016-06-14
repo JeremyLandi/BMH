@@ -51,7 +51,7 @@ namespace BasicMedicalHistory.Controllers
                                                 CustEmail = c.CustEmail,
                                                 
                                                 //personal info
-                                                BloodTypeId = c.BloodTypeId,
+                                                BloodType = c.BloodType,
                                                 BirthDate = c.BirthDate,
                                                 Gender = c.Gender,
                                                 Hair = c.Hair,
@@ -95,7 +95,7 @@ namespace BasicMedicalHistory.Controllers
                                     CustEmail = c.CustEmail,
 
                                     //personal info
-                                    BloodTypeId = c.BloodTypeId,
+                                    BloodType = c.BloodType,
                                     BirthDate = c.BirthDate,
                                     Gender = c.Gender,
                                     Hair = c.Hair,

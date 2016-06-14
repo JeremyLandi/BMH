@@ -8,9 +8,10 @@ using BasicMedicalHistory.Models;
 namespace BasicMedicalHistory.Migrations
 {
     [DbContext(typeof(BmhContext))]
-    partial class BmhContextModelSnapshot : ModelSnapshot
+    [Migration("20160613231322_changedMedicationModel")]
+    partial class changedMedicationModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")
@@ -171,13 +172,13 @@ namespace BasicMedicalHistory.Migrations
                     b.Property<int>("MedicationId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("BrandName");
-
                     b.Property<string>("Dosage");
 
                     b.Property<string>("DrugInteractions");
 
                     b.Property<string>("GenericName");
+
+                    b.Property<string>("MedicalName");
 
                     b.Property<string>("SideEffects");
 

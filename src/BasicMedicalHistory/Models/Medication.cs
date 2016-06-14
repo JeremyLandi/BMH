@@ -11,13 +11,11 @@ namespace BasicMedicalHistory.Models
         [Key]
         public int MedicationId { get; set; }
         public string GenericName { get; set; }
-        public string MedicalName { get; set; }
+        public string BrandName { get; set; }
         public string Dosage { get; set; }
-        public string Frequency { get; set; }
-        public string Usage { get; set; }
-        public string Notes { get; set; }
+        public string SideEffects { get; set; }
+        public string DrugInteractions { get; set; }
 
-        public int CustomerId { get; set; }
-        public Customer Customer { get; set; }
+        public ICollection<CustomerMed> CustomerMed { get; set; }
     }
 }

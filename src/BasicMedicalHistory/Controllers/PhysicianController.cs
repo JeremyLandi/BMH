@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Web.Http;
 using Microsoft.AspNetCore.Cors;
+using System.Web.Http;
 using BasicMedicalHistory.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +14,12 @@ namespace BasicMedicalHistory.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [EnableCors("AllowDevelopmentEnvironment")]
-    public class AllergyController : ApiController
+    public class PhysicianController : ApiController
     {
+
         private BmhContext _context;
 
-        public AllergyController(BmhContext context)
+        public PhysicianController(BmhContext context)
         {
             _context = context;
         }
@@ -32,53 +33,57 @@ namespace BasicMedicalHistory.Controllers
                 return BadRequest(ModelState);
             }
 
-            IQueryable<Allergy> allergy = (from a in _context.Allergy
-                                            where a.CustomerId == id
-                                            select new Allergy
-                                            {
-                                                AllergyId = a.AllergyId,
-                                                Name = a.Name,
-                                                Reaction = a.Reaction,
-                                                Notes = a.Notes,
-                                                CustomerId = a.CustomerId
-                                            });
+            IQueryable<Physician> physician = (from a in _context.Physician
+                                               where a.CustomerId == id
+                                               select new Physician
+                                               {
+                                                   PhysicianId = a.PhysicianId,
+                                                   PhysicianName = a.PhysicianName,
+                                                   Title = a.Title,
+                                                   BusinessName = a.BusinessName,
+                                                   Phone = a.Phone,
+                                                   Address = a.Address,
+                                                   City = a.City,
+                                                   State = a.State,
+                                                   CustomerId = a.CustomerId
+                                               });
 
-            if (allergy == null)
+            if (physician == null)
             {
                 return NotFound();
             }
 
-            return Ok(allergy);
+            return Ok(physician);
         }
 
         // POST api/values
         [HttpPost]
-        public IActionResult Post([FromBody]Allergy allergy)
+        public IActionResult Post([FromBody]Physician physician)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var existingAllergy = (from a in _context.Allergy
-                                   where a.Name == allergy.Name 
-                                   && a.CustomerId == allergy.CustomerId
-                                   select a);
+            var existingPhysician = (from a in _context.Physician
+                                     where a.PhysicianName == physician.PhysicianName
+                                     && a.CustomerId == physician.CustomerId
+                                     select a);
 
-            //if allergy exists, it won't create another
-            if (existingAllergy.Count<Allergy>() > 0)
+            //if physician exists, it won't create another
+            if (existingPhysician.Count<Physician>() > 0)
             {
                 return new StatusCodeResult(StatusCodes.Status409Conflict);
             }
-            
-            _context.Allergy.Add(allergy);
+
+            _context.Physician.Add(physician);
             try
             {
                 _context.SaveChanges();
             }
             catch (DbUpdateException)
             {
-                if (AllergyExists(allergy.AllergyId))
+                if (PhysicianExists(physician.PhysicianId))
                 {
                     return new StatusCodeResult(StatusCodes.Status409Conflict);
                 }
@@ -87,25 +92,25 @@ namespace BasicMedicalHistory.Controllers
                     throw;
                 }
             }
-            //return CreatedAtRoute("GetAllergy", new { id = allergy.AllergyId }, allergy);
-            return Ok(allergy);
+            //return CreatedAtRoute("GetPhysician", new { id = physician.PhysicianId }, physician);
+            return Ok(physician);
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]Allergy allergy)
+        public IActionResult Put(int id, [FromBody]Physician physician)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != allergy.AllergyId)
+            if (id != physician.PhysicianId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(allergy).State = EntityState.Modified;
+            _context.Entry(physician).State = EntityState.Modified;
 
             try
             {
@@ -113,7 +118,7 @@ namespace BasicMedicalHistory.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AllergyExists(allergy.AllergyId))
+                if (!PhysicianExists(physician.PhysicianId))
                 {
                     return NotFound();
                 }
@@ -135,21 +140,21 @@ namespace BasicMedicalHistory.Controllers
                 return BadRequest(ModelState);
             }
 
-            Allergy allergy = _context.Allergy.Single(c => c.AllergyId == id);
-            if (allergy == null)
+            Physician physician = _context.Physician.Single(c => c.PhysicianId == id);
+            if (physician == null)
             {
                 return NotFound();
             }
 
-            _context.Allergy.Remove(allergy);
+            _context.Physician.Remove(physician);
             _context.SaveChanges();
 
-            return Ok(allergy);
+            return Ok(physician);
         }
 
-        private bool AllergyExists(int id)
+        private bool PhysicianExists(int id)
         {
-            return _context.Allergy.Count(c => c.AllergyId == id) > 0;
+            return _context.Physician.Count(c => c.PhysicianId == id) > 0;
         }
     }
 }
