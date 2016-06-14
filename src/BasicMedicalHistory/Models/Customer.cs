@@ -14,13 +14,6 @@ namespace BasicMedicalHistory.Models
         public DateTime CreatedDate { get; set; }
         public string QrCode { get; set; }
 
-        //public int EmContactId { get; set; }
-        //public int MedicationId { get; set; }
-        //public int AllergyId { get; set; }
-        //public int ConditionId { get; set; }
-        //public int PhysicianId { get; set; }
-        //public int InsuranceId { get; set; }
-
         //contact info
         public string CustName { get; set; }
         public string CustAddress { get; set; }
@@ -30,7 +23,7 @@ namespace BasicMedicalHistory.Models
         public string CustEmail { get; set; }
 
         //personal info
-        public int BloodTypeId { get; set; }
+        public int BloodType { get; set; }
         [DataType(DataType.Date)]
         public string BirthDate { get; set; }
         public string Gender { get; set; }
@@ -38,13 +31,12 @@ namespace BasicMedicalHistory.Models
         public string EyeColor { get; set; }
         public string Height { get; set; }
         public string Weight { get; set; }
-
        
-        public ICollection<EmContact> CustEmContacts { get; set; }
-        public ICollection<Medication> CustMedications { get; set; }
-        public ICollection<Allergy> CustAllergies { get; set; }
-        public ICollection<MedicalCondition> CustMedicalCondition { get; set; }
-        public ICollection<Physician> CustPhysicians { get; set; }
-        public ICollection<Insurance> CustInsurances { get; set; }
+        public ICollection<EmContact> EmContact { get; set; }
+        public ICollection<CustomerMed> CustomerMed { get; set; }
+        public ICollection<Allergy> Allergy { get; set; }
+        public ICollection<MedicalCondition> MedicalCondition { get; set; }
+        public ICollection<Physician> Physician { get; set; }
+        public ICollection<Insurance> Insurance { get; set; }
     }
 }
