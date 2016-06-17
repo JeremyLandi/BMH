@@ -8,9 +8,10 @@ using BasicMedicalHistory.Models;
 namespace BasicMedicalHistory.Migrations
 {
     [DbContext(typeof(BmhContext))]
-    partial class BmhContextModelSnapshot : ModelSnapshot
+    [Migration("20160614191038_updatedCustomerModelNames")]
+    partial class updatedCustomerModelNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")
@@ -28,8 +29,6 @@ namespace BasicMedicalHistory.Migrations
                     b.Property<string>("Notes");
 
                     b.Property<string>("Reaction");
-
-                    b.Property<bool>("showOnPublicView");
 
                     b.HasKey("AllergyId");
 
@@ -97,8 +96,6 @@ namespace BasicMedicalHistory.Migrations
 
                     b.Property<string>("Usage");
 
-                    b.Property<bool>("showOnPublicView");
-
                     b.HasKey("CustomerMedId");
 
                     b.HasIndex("CustomerId");
@@ -120,8 +117,6 @@ namespace BasicMedicalHistory.Migrations
                     b.Property<string>("EmergencyContactPhone");
 
                     b.Property<string>("Relationship");
-
-                    b.Property<bool>("showOnPublicView");
 
                     b.HasKey("EmContactId");
 
@@ -151,8 +146,6 @@ namespace BasicMedicalHistory.Migrations
 
                     b.Property<string>("Phone");
 
-                    b.Property<bool>("showOnPublicView");
-
                     b.HasKey("InsuranceId");
 
                     b.HasIndex("CustomerId");
@@ -170,8 +163,6 @@ namespace BasicMedicalHistory.Migrations
                     b.Property<string>("Description");
 
                     b.Property<string>("MedicalConditionName");
-
-                    b.Property<bool>("showOnPublicView");
 
                     b.HasKey("MedicalConditionId");
 
@@ -220,8 +211,6 @@ namespace BasicMedicalHistory.Migrations
                     b.Property<string>("State");
 
                     b.Property<string>("Title");
-
-                    b.Property<bool>("showOnPublicView");
 
                     b.HasKey("PhysicianId");
 

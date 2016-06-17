@@ -25,29 +25,56 @@ namespace BasicMedicalHistory.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IActionResult GetAllergy([FromQuery]int? id)
+        public IActionResult GetAllergy([FromQuery]int? id, bool showOnPublicView)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            IQueryable<MedicalCondition> medicalCondition = (from a in _context.MedicalCondition
-                                                             where a.CustomerId == id
-                                                             select new MedicalCondition
-                                                             {
-                                                                 MedicalConditionId = a.MedicalConditionId,
-                                                                 MedicalConditionName = a.MedicalConditionName,
-                                                                 Description = a.Description,
-                                                                 CustomerId = a.CustomerId
-                                                             });
-
-            if (medicalCondition == null)
+            if (showOnPublicView == false)
             {
-                return NotFound();
+                IQueryable<MedicalCondition> medicalCondition = (from a in _context.MedicalCondition
+                                                                 where a.CustomerId == id
+                                                                 select new MedicalCondition
+                                                                 {
+                                                                     MedicalConditionId = a.MedicalConditionId,
+                                                                     MedicalConditionName = a.MedicalConditionName,
+                                                                     Description = a.Description,
+                                                                     CustomerId = a.CustomerId
+                                                                 });
+
+                if (medicalCondition == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(medicalCondition);
             }
 
-            return Ok(medicalCondition);
+            if (showOnPublicView)
+            {
+                IQueryable<MedicalCondition> medicalCondition = (from a in _context.MedicalCondition
+                                                                 where a.CustomerId == id
+                                                                 && a.ShowOnPublicView == showOnPublicView
+                                                                 select new MedicalCondition
+                                                                 {
+                                                                     MedicalConditionId = a.MedicalConditionId,
+                                                                     MedicalConditionName = a.MedicalConditionName,
+                                                                     Description = a.Description,
+                                                                     CustomerId = a.CustomerId
+                                                                 });
+
+                if (medicalCondition == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(medicalCondition);
+            }
+
+            return Ok();
+
         }
 
         // POST api/values

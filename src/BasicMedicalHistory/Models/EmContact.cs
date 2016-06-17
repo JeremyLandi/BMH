@@ -13,6 +13,7 @@ namespace BasicMedicalHistory.Models
         public string EmContactName { get; set; }
         public string Relationship { get; set; }
         public string EmergencyContactPhone { get; set; }
+        public bool ShowOnPublicView { get; set; }
 
         public int CustomerId { get; set; }
         public Customer Customer { get; set; }

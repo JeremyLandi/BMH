@@ -26,7 +26,7 @@ namespace BasicMedicalHistory.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IActionResult GetCustomer([FromQuery]int? id)
+        public IActionResult GetCustomer([FromQuery]string custUserName)
         {
             if (!ModelState.IsValid)
             {
@@ -34,16 +34,18 @@ namespace BasicMedicalHistory.Controllers
             }
 
             IQueryable<Customer> customer = (from c in _context.Customer
-                                            where c.CustomerId == id
-                                            select new Customer
+                                             where c.CustUserName == custUserName
+                                             select new Customer
                                             {
                                                 //meta data
                                                 CustomerId = c.CustomerId,
+                                                CustUserName = c.CustUserName,
                                                 CreatedDate = c.CreatedDate,
                                                 QrCode = c.QrCode,
 
                                                 //contact info
-                                                CustName = c.CustName,
+                                                CustFirst = c.CustFirst,
+                                                CustLast = c.CustLast,
                                                 CustAddress = c.CustAddress,
                                                 CustCity = c.CustCity,
                                                 CustState = c.CustState,
@@ -78,31 +80,8 @@ namespace BasicMedicalHistory.Controllers
             }
 
             var existingCustomer = (from c in _context.Customer
-                                where c.CustName == customer.CustName
-                                select new Customer
-                                {
-                                    //meta data
-                                    CustomerId = c.CustomerId,
-                                    CreatedDate = c.CreatedDate,
-                                    QrCode = c.QrCode,
-
-                                    //contact info
-                                    CustName = c.CustName,
-                                    CustAddress = c.CustAddress,
-                                    CustCity = c.CustCity,
-                                    CustState = c.CustState,
-                                    CustPhone = c.CustPhone,
-                                    CustEmail = c.CustEmail,
-
-                                    //personal info
-                                    BloodType = c.BloodType,
-                                    BirthDate = c.BirthDate,
-                                    Gender = c.Gender,
-                                    Hair = c.Hair,
-                                    EyeColor = c.EyeColor,
-                                    Height = c.Height,
-                                    Weight = c.Weight,
-                                });
+                                    where c.CustUserName == customer.CustUserName
+                                    select c);
 
             //if customer exists, it won't create another
             if (existingCustomer.Count<Customer>() > 0)

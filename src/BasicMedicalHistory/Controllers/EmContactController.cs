@@ -33,15 +33,15 @@ namespace BasicMedicalHistory.Controllers
             }
 
             IQueryable<EmContact> emContact = (from a in _context.EmContact
-                                               where a.CustomerId == id
-                                               select new EmContact
-                                                 {
-                                                     EmContactId = a.EmContactId,
-                                                     EmContactName = a.EmContactName,
-                                                     Relationship = a.Relationship,
-                                                     EmergencyContactPhone = a.EmergencyContactPhone,
-                                                     CustomerId = a.CustomerId
-                                                 });
+                                                where a.CustomerId == id
+                                                select new EmContact
+                                                {
+                                                    EmContactId = a.EmContactId,
+                                                    EmContactName = a.EmContactName,
+                                                    Relationship = a.Relationship,
+                                                    EmergencyContactPhone = a.EmergencyContactPhone,
+                                                    CustomerId = a.CustomerId
+                                                });
 
             if (emContact == null)
             {
@@ -49,6 +49,7 @@ namespace BasicMedicalHistory.Controllers
             }
 
             return Ok(emContact);
+           
         }
 
         // POST api/values

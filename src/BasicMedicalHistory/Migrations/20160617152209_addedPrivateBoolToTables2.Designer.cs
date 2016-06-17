@@ -8,9 +8,10 @@ using BasicMedicalHistory.Models;
 namespace BasicMedicalHistory.Migrations
 {
     [DbContext(typeof(BmhContext))]
-    partial class BmhContextModelSnapshot : ModelSnapshot
+    [Migration("20160617152209_addedPrivateBoolToTables2")]
+    partial class addedPrivateBoolToTables2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")
@@ -27,9 +28,9 @@ namespace BasicMedicalHistory.Migrations
 
                     b.Property<string>("Notes");
 
-                    b.Property<string>("Reaction");
-
                     b.Property<bool>("showOnPublicView");
+
+                    b.Property<string>("Reaction");
 
                     b.HasKey("AllergyId");
 
@@ -95,9 +96,9 @@ namespace BasicMedicalHistory.Migrations
 
                     b.Property<string>("Notes");
 
-                    b.Property<string>("Usage");
-
                     b.Property<bool>("showOnPublicView");
+
+                    b.Property<string>("Usage");
 
                     b.HasKey("CustomerMedId");
 
@@ -119,9 +120,9 @@ namespace BasicMedicalHistory.Migrations
 
                     b.Property<string>("EmergencyContactPhone");
 
-                    b.Property<string>("Relationship");
-
                     b.Property<bool>("showOnPublicView");
+
+                    b.Property<string>("Relationship");
 
                     b.HasKey("EmContactId");
 
@@ -217,11 +218,11 @@ namespace BasicMedicalHistory.Migrations
 
                     b.Property<string>("PhysicianName");
 
+                    b.Property<bool>("showOnPublicView");
+
                     b.Property<string>("State");
 
                     b.Property<string>("Title");
-
-                    b.Property<bool>("showOnPublicView");
 
                     b.HasKey("PhysicianId");
 

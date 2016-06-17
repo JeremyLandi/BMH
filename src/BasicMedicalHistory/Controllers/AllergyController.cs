@@ -25,30 +25,56 @@ namespace BasicMedicalHistory.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IActionResult GetAllergy([FromQuery]int? id)
+        public IActionResult GetAllergy([FromQuery]int id, [FromQuery]bool showOnPublicView)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            IQueryable<Allergy> allergy = (from a in _context.Allergy
-                                            where a.CustomerId == id
-                                            select new Allergy
-                                            {
-                                                AllergyId = a.AllergyId,
-                                                Name = a.Name,
-                                                Reaction = a.Reaction,
-                                                Notes = a.Notes,
-                                                CustomerId = a.CustomerId
-                                            });
-
-            if (allergy == null)
+            //brings back everything for logged in user
+            if (showOnPublicView == false)
             {
-                return NotFound();
+                IQueryable<Allergy> allergy = (from a in _context.Allergy
+                                               where a.CustomerId == id
+                                               select new Allergy
+                                               {
+                                                   AllergyId = a.AllergyId,
+                                                   Name = a.Name,
+                                                   Reaction = a.Reaction,
+                                                   Notes = a.Notes,
+                                                   CustomerId = a.CustomerId
+                                               });
+                if (allergy == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(allergy);
             }
 
-            return Ok(allergy);
+            if (showOnPublicView)
+            {
+                IQueryable<Allergy> allergy = (from a in _context.Allergy
+                                               where a.CustomerId == id
+                                               && a.ShowOnPublicView == showOnPublicView
+                                               select new Allergy
+                                               {
+                                                   AllergyId = a.AllergyId,
+                                                   Name = a.Name,
+                                                   Reaction = a.Reaction,
+                                                   Notes = a.Notes,
+                                                   CustomerId = a.CustomerId
+                                               });
+                if (allergy == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(allergy);
+            }
+
+            return Ok();
         }
 
         // POST api/values
@@ -70,7 +96,7 @@ namespace BasicMedicalHistory.Controllers
             {
                 return new StatusCodeResult(StatusCodes.Status409Conflict);
             }
-            
+            allergy.ShowOnPublicView = true;
             _context.Allergy.Add(allergy);
             try
             {

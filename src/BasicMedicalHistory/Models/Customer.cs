@@ -15,7 +15,9 @@ namespace BasicMedicalHistory.Models
         public string QrCode { get; set; }
 
         //contact info
-        public string CustName { get; set; }
+        public string CustFirst { get; set; }
+        public string CustLast { get; set; }
+        public string CustUserName { get; set; }
         public string CustAddress { get; set; }
         public string CustCity { get; set; }
         public string CustState { get; set; }
@@ -23,7 +25,7 @@ namespace BasicMedicalHistory.Models
         public string CustEmail { get; set; }
 
         //personal info
-        public int BloodType { get; set; }
+        public string BloodType { get; set; }
         [DataType(DataType.Date)]
         public string BirthDate { get; set; }
         public string Gender { get; set; }
