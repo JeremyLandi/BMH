@@ -34,6 +34,7 @@ namespace BasicMedicalHistory.Controllers
             }
 
             IQueryable<Customer> customer = (from c in _context.Customer
+                                             //custUserName is for public
                                              where c.CustUserName == custUserName
                                              select new Customer
                                             {

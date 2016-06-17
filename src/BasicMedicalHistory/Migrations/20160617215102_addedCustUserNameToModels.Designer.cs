@@ -8,9 +8,10 @@ using BasicMedicalHistory.Models;
 namespace BasicMedicalHistory.Migrations
 {
     [DbContext(typeof(BmhContext))]
-    partial class BmhContextModelSnapshot : ModelSnapshot
+    [Migration("20160617215102_addedCustUserNameToModels")]
+    partial class addedCustUserNameToModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")

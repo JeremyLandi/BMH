@@ -23,20 +23,21 @@ namespace BasicMedicalHistory.Controllers
             _context = context;
         }
 
-        // GET: api/values
+        //// GET: api/values
         [HttpGet]
-        public IActionResult GetAllergy([FromQuery]int id, [FromQuery]bool showOnPublicView)
+        public IActionResult GetPrivateAllergy([FromQuery]int id, [FromQuery] string token, [FromQuery]string custUserName)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            //brings back everything for logged in user
-            if (showOnPublicView == false)
+            //checks if they are logged in
+            if (token == null)
             {
                 IQueryable<Allergy> allergy = (from a in _context.Allergy
-                                               where a.CustomerId == id
+                                               where a.CustUserName == custUserName
+                                               && a.ShowOnPublicView == false
                                                select new Allergy
                                                {
                                                    AllergyId = a.AllergyId,
@@ -53,11 +54,11 @@ namespace BasicMedicalHistory.Controllers
                 return Ok(allergy);
             }
 
-            if (showOnPublicView)
+            if (token.Count() > 20)
             {
+                //brings back everything for logged in user
                 IQueryable<Allergy> allergy = (from a in _context.Allergy
                                                where a.CustomerId == id
-                                               && a.ShowOnPublicView == showOnPublicView
                                                select new Allergy
                                                {
                                                    AllergyId = a.AllergyId,
@@ -76,6 +77,7 @@ namespace BasicMedicalHistory.Controllers
 
             return Ok();
         }
+
 
         // POST api/values
         [HttpPost]

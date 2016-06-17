@@ -18,6 +18,7 @@ namespace BasicMedicalHistory.Models
         public bool ShowOnPublicView { get; set; }
 
         public Customer Customer { get; set; }
+        public string CustUserName { get; set; }
         public Medication Medication { get; set; }
     }
 }
