@@ -26,34 +26,64 @@ namespace BasicMedicalHistory.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IActionResult GetAllergy([FromQuery]int? id)
+        public IActionResult GetAllergy([FromQuery]int? id, bool showOnPublicView)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            IQueryable<Physician> physician = (from a in _context.Physician
-                                               where a.CustomerId == id
-                                               select new Physician
-                                               {
-                                                   PhysicianId = a.PhysicianId,
-                                                   PhysicianName = a.PhysicianName,
-                                                   Title = a.Title,
-                                                   BusinessName = a.BusinessName,
-                                                   Phone = a.Phone,
-                                                   Address = a.Address,
-                                                   City = a.City,
-                                                   State = a.State,
-                                                   CustomerId = a.CustomerId
-                                               });
-
-            if (physician == null)
+            if (showOnPublicView == false)
             {
-                return NotFound();
+                IQueryable<Physician> physician = (from a in _context.Physician
+                                                   where a.CustomerId == id
+                                                   select new Physician
+                                                   {
+                                                       PhysicianId = a.PhysicianId,
+                                                       PhysicianName = a.PhysicianName,
+                                                       Title = a.Title,
+                                                       BusinessName = a.BusinessName,
+                                                       Phone = a.Phone,
+                                                       Address = a.Address,
+                                                       City = a.City,
+                                                       State = a.State,
+                                                       CustomerId = a.CustomerId
+                                                   });
+
+                if (physician == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(physician);
             }
 
-            return Ok(physician);
+            if (showOnPublicView )
+            {
+                IQueryable<Physician> physician = (from a in _context.Physician
+                                                   where a.CustomerId == id
+                                                   && a.ShowOnPublicView == showOnPublicView
+                                                   select new Physician
+                                                   {
+                                                       PhysicianId = a.PhysicianId,
+                                                       PhysicianName = a.PhysicianName,
+                                                       Title = a.Title,
+                                                       BusinessName = a.BusinessName,
+                                                       Phone = a.Phone,
+                                                       Address = a.Address,
+                                                       City = a.City,
+                                                       State = a.State,
+                                                       CustomerId = a.CustomerId
+                                                   });
+
+                if (physician == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(physician);
+            }
+
+            return Ok();
         }
 
         // POST api/values

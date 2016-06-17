@@ -8,9 +8,10 @@ using BasicMedicalHistory.Models;
 namespace BasicMedicalHistory.Migrations
 {
     [DbContext(typeof(BmhContext))]
-    partial class BmhContextModelSnapshot : ModelSnapshot
+    [Migration("20160617151024_addedPrivateBoolToTables")]
+    partial class addedPrivateBoolToTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")
@@ -27,9 +28,9 @@ namespace BasicMedicalHistory.Migrations
 
                     b.Property<string>("Notes");
 
-                    b.Property<string>("Reaction");
-
                     b.Property<bool>("showOnPublicView");
+
+                    b.Property<string>("Reaction");
 
                     b.HasKey("AllergyId");
 
@@ -95,9 +96,9 @@ namespace BasicMedicalHistory.Migrations
 
                     b.Property<string>("Notes");
 
-                    b.Property<string>("Usage");
+                    b.Property<byte>("showOnPublicView");
 
-                    b.Property<bool>("showOnPublicView");
+                    b.Property<string>("Usage");
 
                     b.HasKey("CustomerMedId");
 
@@ -119,9 +120,9 @@ namespace BasicMedicalHistory.Migrations
 
                     b.Property<string>("EmergencyContactPhone");
 
-                    b.Property<string>("Relationship");
+                    b.Property<byte>("showOnPublicView");
 
-                    b.Property<bool>("showOnPublicView");
+                    b.Property<string>("Relationship");
 
                     b.HasKey("EmContactId");
 
@@ -151,7 +152,7 @@ namespace BasicMedicalHistory.Migrations
 
                     b.Property<string>("Phone");
 
-                    b.Property<bool>("showOnPublicView");
+                    b.Property<byte>("showOnPublicView");
 
                     b.HasKey("InsuranceId");
 
@@ -171,7 +172,7 @@ namespace BasicMedicalHistory.Migrations
 
                     b.Property<string>("MedicalConditionName");
 
-                    b.Property<bool>("showOnPublicView");
+                    b.Property<byte>("showOnPublicView");
 
                     b.HasKey("MedicalConditionId");
 
@@ -217,11 +218,11 @@ namespace BasicMedicalHistory.Migrations
 
                     b.Property<string>("PhysicianName");
 
+                    b.Property<byte>("showOnPublicView");
+
                     b.Property<string>("State");
 
                     b.Property<string>("Title");
-
-                    b.Property<bool>("showOnPublicView");
 
                     b.HasKey("PhysicianId");
 

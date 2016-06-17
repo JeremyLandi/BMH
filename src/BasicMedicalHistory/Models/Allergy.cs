@@ -13,6 +13,7 @@ namespace BasicMedicalHistory.Models
         public string Name { get; set; }
         public string Reaction { get; set; }
         public string Notes { get; set; }
+        public bool ShowOnPublicView { get; set; }
 
         public int CustomerId { get; set; }
         public Customer Customer { get; set; }

@@ -26,34 +26,65 @@ namespace BasicMedicalHistory.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IActionResult GetInsurance([FromQuery]int? id)
+        public IActionResult GetInsurance([FromQuery]int? id, bool showOnPublicView)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            IQueryable<Insurance> insurance = (from a in _context.Insurance
-                                               where a.CustomerId == id
-                                               select new Insurance
-                                               {
-                                                   InsuranceId = a.InsuranceId,
-                                                   InsuranceProvider = a.InsuranceProvider,
-                                                   IdNumber = a.IdNumber,
-                                                   GroupNumber = a.GroupNumber,
-                                                   BIN = a.BIN,
-                                                   Deducatable = a.Deducatable,
-                                                   Phone = a.Phone,
-                                                   Notes = a.Notes,
-                                                   CustomerId = a.CustomerId
-                                               });
-
-            if (insurance == null)
+            if (showOnPublicView == false)
             {
-                return NotFound();
+                IQueryable<Insurance> insurance = (from a in _context.Insurance
+                                                   where a.CustomerId == id
+                                                   select new Insurance
+                                                   {
+                                                       InsuranceId = a.InsuranceId,
+                                                       InsuranceProvider = a.InsuranceProvider,
+                                                       IdNumber = a.IdNumber,
+                                                       GroupNumber = a.GroupNumber,
+                                                       BIN = a.BIN,
+                                                       Deducatable = a.Deducatable,
+                                                       Phone = a.Phone,
+                                                       Notes = a.Notes,
+                                                       CustomerId = a.CustomerId
+                                                   });
+
+                if (insurance == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(insurance);
+            }
+           
+
+            if (showOnPublicView)
+            {
+                IQueryable<Insurance> insurance = (from a in _context.Insurance
+                                                   where a.CustomerId == id
+                                                   && a.ShowOnPublicView == showOnPublicView
+                                                   select new Insurance
+                                                   {
+                                                       InsuranceId = a.InsuranceId,
+                                                       InsuranceProvider = a.InsuranceProvider,
+                                                       IdNumber = a.IdNumber,
+                                                       GroupNumber = a.GroupNumber,
+                                                       BIN = a.BIN,
+                                                       Deducatable = a.Deducatable,
+                                                       Phone = a.Phone,
+                                                       Notes = a.Notes,
+                                                       CustomerId = a.CustomerId
+                                                   });
+
+                if (insurance == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(insurance);
             }
 
-            return Ok(insurance);
+            return Ok();
         }
 
         // POST api/values

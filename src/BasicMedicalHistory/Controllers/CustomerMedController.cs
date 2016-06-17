@@ -25,30 +25,57 @@ namespace BasicMedicalHistory.Controllers
 
         // get customerMed by
         [HttpGet]
-        public IActionResult GetCustomerMed([FromQuery]int? id)
+        public IActionResult GetCustomerMed([FromQuery]int? id, [FromQuery]bool showOnPublicView)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            IQueryable<CustomerMed> customerMed = (from a in _context.CustomerMed
-                                                  where a.CustomerMedId == id
-                                                  select new CustomerMed
-                                                  {
-                                                     CustomerMedId = a.CustomerMedId,
-                                                     MedicationId = a.MedicationId,
-                                                     CustomerId = a.CustomerId,
-                                                     Usage = a.Usage,
-                                                     Frequency = a.Frequency,
-                                                     Notes = a.Notes
-                                                  });
-            if (customerMed == null)
+            if (showOnPublicView == false)
             {
-                return NotFound();
+                IQueryable<CustomerMed> customerMed = (from a in _context.CustomerMed
+                                                       where a.CustomerMedId == id
+                                                       select new CustomerMed
+                                                       {
+                                                           CustomerMedId = a.CustomerMedId,
+                                                           MedicationId = a.MedicationId,
+                                                           CustomerId = a.CustomerId,
+                                                           Usage = a.Usage,
+                                                           Frequency = a.Frequency,
+                                                           Notes = a.Notes
+                                                       });
+                if (customerMed == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(customerMed);
             }
 
-            return Ok(customerMed);
+            if (showOnPublicView)
+            {
+                IQueryable<CustomerMed> customerMed = (from a in _context.CustomerMed
+                                                       where a.CustomerMedId == id
+                                                       && a.ShowOnPublicView == showOnPublicView
+                                                       select new CustomerMed
+                                                       {
+                                                           CustomerMedId = a.CustomerMedId,
+                                                           MedicationId = a.MedicationId,
+                                                           CustomerId = a.CustomerId,
+                                                           Usage = a.Usage,
+                                                           Frequency = a.Frequency,
+                                                           Notes = a.Notes
+                                                       });
+                if (customerMed == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(customerMed);
+            }
+
+            return Ok();
         }
 
         // POST api/values

@@ -15,6 +15,7 @@ namespace BasicMedicalHistory.Models
         public string Usage { get; set; }
         public string Frequency { get; set; }
         public string Notes { get; set; }
+        public bool ShowOnPublicView { get; set; }
 
         public Customer Customer { get; set; }
         public Medication Medication { get; set; }
