@@ -26,16 +26,17 @@ namespace BasicMedicalHistory.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IActionResult GetInsurance([FromQuery]int? id, bool showOnPublicView)
+        public IActionResult GetInsurance([FromQuery]int? id, [FromQuery] string token, [FromQuery]string custUserName)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (showOnPublicView == false)
+            if (token == null)
             {
                 IQueryable<Insurance> insurance = (from a in _context.Insurance
-                                                   where a.CustomerId == id
+                                                   where a.CustUserName == custUserName
+                                                   && a.ShowOnPublicView == false
                                                    select new Insurance
                                                    {
                                                        InsuranceId = a.InsuranceId,
@@ -56,13 +57,12 @@ namespace BasicMedicalHistory.Controllers
 
                 return Ok(insurance);
             }
-           
 
-            if (showOnPublicView)
+
+            if (token.Count() > 20)
             {
                 IQueryable<Insurance> insurance = (from a in _context.Insurance
                                                    where a.CustomerId == id
-                                                   && a.ShowOnPublicView == showOnPublicView
                                                    select new Insurance
                                                    {
                                                        InsuranceId = a.InsuranceId,

@@ -25,17 +25,18 @@ namespace BasicMedicalHistory.Controllers
 
         // get customerMed by
         [HttpGet]
-        public IActionResult GetCustomerMed([FromQuery]int? id, [FromQuery]bool showOnPublicView)
+        public IActionResult GetCustomerMed([FromQuery]int? id, [FromQuery] string token, [FromQuery]string custUserName)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (showOnPublicView == false)
+            if (token == null)
             {
                 IQueryable<CustomerMed> customerMed = (from a in _context.CustomerMed
-                                                       where a.CustomerMedId == id
+                                                       where a.CustUserName == custUserName
+                                                       && a.ShowOnPublicView == false
                                                        select new CustomerMed
                                                        {
                                                            CustomerMedId = a.CustomerMedId,
@@ -53,11 +54,10 @@ namespace BasicMedicalHistory.Controllers
                 return Ok(customerMed);
             }
 
-            if (showOnPublicView)
+            if (token.Count() > 20)
             {
                 IQueryable<CustomerMed> customerMed = (from a in _context.CustomerMed
-                                                       where a.CustomerMedId == id
-                                                       && a.ShowOnPublicView == showOnPublicView
+                                                       where a.CustomerId == id
                                                        select new CustomerMed
                                                        {
                                                            CustomerMedId = a.CustomerMedId,
@@ -97,6 +97,16 @@ namespace BasicMedicalHistory.Controllers
             {
                 return new StatusCodeResult(StatusCodes.Status409Conflict);
             }
+
+            //Medication medication = new Medication()
+            //{
+            //    MedicationId = customerMed.MedicationId,
+            //    GenericName = customerMed.GenericName,
+            //    BrandName = customerMed.BrandName,
+            //    Dosage = customerMed.Dosage,
+            //    SideEffects = customerMed.SideEffects,
+            //    DrugInteractions = customerMed.DrugInteractions
+            //}
 
             _context.CustomerMed.Add(customerMed);
             try

@@ -26,16 +26,19 @@ namespace BasicMedicalHistory.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IActionResult GetAllergy([FromQuery]int? id, bool showOnPublicView)
+        public IActionResult GetAllergy([FromQuery]int? id, [FromQuery] string token, [FromQuery]string custUserName)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (showOnPublicView == false)
+
+            //checks if they are logged in
+            if (token == null)
             {
                 IQueryable<Physician> physician = (from a in _context.Physician
-                                                   where a.CustomerId == id
+                                                   where a.CustUserName == custUserName
+                                                   && a.ShowOnPublicView == false
                                                    select new Physician
                                                    {
                                                        PhysicianId = a.PhysicianId,
@@ -57,11 +60,10 @@ namespace BasicMedicalHistory.Controllers
                 return Ok(physician);
             }
 
-            if (showOnPublicView )
+            if (token.Count() > 20)
             {
                 IQueryable<Physician> physician = (from a in _context.Physician
                                                    where a.CustomerId == id
-                                                   && a.ShowOnPublicView == showOnPublicView
                                                    select new Physician
                                                    {
                                                        PhysicianId = a.PhysicianId,
