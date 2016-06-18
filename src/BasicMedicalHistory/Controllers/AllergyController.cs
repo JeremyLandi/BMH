@@ -25,7 +25,7 @@ namespace BasicMedicalHistory.Controllers
 
         //// GET: api/values
         [HttpGet]
-        public IActionResult GetPrivateAllergy([FromQuery]int id, [FromQuery] string token, [FromQuery]string custUserName)
+        public IActionResult GetPrivateAllergy([FromQuery]int? id, [FromQuery] string token, [FromQuery]string custUserName)
         {
             if (!ModelState.IsValid)
             {

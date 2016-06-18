@@ -25,7 +25,7 @@ namespace BasicMedicalHistory.Controllers
 
         // get emContact by
         [HttpGet]
-        public IActionResult GetEmContact([FromQuery]int? id)
+        public IActionResult GetEmContact([FromQuery]string custUserName)
         {
             if (!ModelState.IsValid)
             {
@@ -33,8 +33,8 @@ namespace BasicMedicalHistory.Controllers
             }
 
             IQueryable<EmContact> emContact = (from a in _context.EmContact
-                                                where a.CustomerId == id
-                                                select new EmContact
+                                               where a.CustUserName == custUserName
+                                               select new EmContact
                                                 {
                                                     EmContactId = a.EmContactId,
                                                     EmContactName = a.EmContactName,

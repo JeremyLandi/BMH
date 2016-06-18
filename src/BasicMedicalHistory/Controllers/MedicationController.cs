@@ -62,8 +62,8 @@ namespace BasicMedicalHistory.Controllers
             }
 
             var existingMedication = (from a in _context.Medication
-                                     where a.BrandName == medication.BrandName
-                                     select new Medication
+                                      where a.BrandName == medication.BrandName
+                                      select new Medication
                                      {
                                          MedicationId = a.MedicationId,
                                          GenericName = a.GenericName,
