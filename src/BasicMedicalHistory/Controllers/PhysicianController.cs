@@ -49,7 +49,8 @@ namespace BasicMedicalHistory.Controllers
                                                        Address = a.Address,
                                                        City = a.City,
                                                        State = a.State,
-                                                       CustomerId = a.CustomerId
+                                                       CustomerId = a.CustomerId,
+                                                       CustUserName = a.CustUserName
                                                    });
 
                 if (physician == null)
@@ -74,7 +75,9 @@ namespace BasicMedicalHistory.Controllers
                                                        Address = a.Address,
                                                        City = a.City,
                                                        State = a.State,
-                                                       CustomerId = a.CustomerId
+                                                       CustomerId = a.CustomerId,
+                                                       ShowOnPublicView = a.ShowOnPublicView,
+                                                       CustUserName = a.CustUserName
                                                    });
 
                 if (physician == null)

@@ -65,7 +65,8 @@ namespace BasicMedicalHistory.Controllers
                                                    Name = a.Name,
                                                    Reaction = a.Reaction,
                                                    Notes = a.Notes,
-                                                   CustomerId = a.CustomerId
+                                                   CustomerId = a.CustomerId,
+                                                   CustUserName = a.CustUserName
                                                });
                 if (allergy == null)
                 {

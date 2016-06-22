@@ -26,123 +26,175 @@ namespace BasicMedicalHistory.Controllers
         // get customerMed by
         [HttpGet]
         public IActionResult GetCustomerMed([FromQuery]int? id, [FromQuery] string token, [FromQuery]string custUserName)
-        {
-            if (!ModelState.IsValid)
+        { 
+           if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (token == null)
-            {
-                IQueryable<CustomerMed> customerMed = (from a in _context.CustomerMed
-                                                       where a.CustUserName == custUserName
-                                                       && a.ShowOnPublicView == false
-                                                       select new CustomerMed
-                                                       {
-                                                           CustomerMedId = a.CustomerMedId,
-                                                           MedicationId = a.MedicationId,
-                                                           CustomerId = a.CustomerId,
-                                                           Usage = a.Usage,
-                                                           Frequency = a.Frequency,
-                                                           Notes = a.Notes
-                                                       });
-                if (customerMed == null)
-                {
-                    return NotFound();
+            IQueryable<Medication> medication = (from a in _context.Medication
+                                                 where a.MedicationId == id
+                                                 select new Medication
+                                                 {
+                                                     MedicationId = a.MedicationId,
+                                                     GenericName = a.GenericName,
+                                                     BrandName = a.BrandName,
+                                                     Dosage = a.Dosage,
+                                                     SideEffects = a.SideEffects,
+                                                     DrugInteractions = a.DrugInteractions
+                                                 });
+
+                    if (medication == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return Ok(medication);
                 }
-
-                return Ok(customerMed);
-            }
-
-            if (token.Count() > 20)
-            {
-                IQueryable<CustomerMed> customerMed = (from a in _context.CustomerMed
-                                                       where a.CustomerId == id
-                                                       select new CustomerMed
-                                                       {
-                                                           CustomerMedId = a.CustomerMedId,
-                                                           MedicationId = a.MedicationId,
-                                                           CustomerId = a.CustomerId,
-                                                           Usage = a.Usage,
-                                                           Frequency = a.Frequency,
-                                                           Notes = a.Notes
-                                                       });
-                if (customerMed == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(customerMed);
-            }
-
-            return Ok();
-        }
 
         // POST api/values
         [HttpPost]
-        public IActionResult Post([FromBody]CustomerMed customerMed)
+        public IActionResult Post([FromBody]MedicationPostView medicationPostView)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var existingCustomerMed = (from a in _context.CustomerMed
-                                      where a.MedicationId == customerMed.MedicationId
-                                      && a.CustomerId == customerMed.CustomerId
-                                      select a);
+            var currentMedication = (from a in _context.Medication
+                                     where a.BrandName == medicationPostView.BrandName
+                                     && a.Dosage == medicationPostView.Dosage
+                                     select new Medication
+                                     {
+                                         MedicationId = a.MedicationId,
+                                         GenericName = a.GenericName,
+                                         BrandName = a.BrandName,
+                                         Dosage = a.Dosage,
+                                         SideEffects = a.SideEffects,
+                                         DrugInteractions = a.DrugInteractions
+                                     });
+            #region existingMedication
 
-            //if customerMed exists, it won't create another
-            if (existingCustomerMed.Count<CustomerMed>() > 0)
+            //if medication exists, it will use current to create new Customer Medication
+            if (currentMedication.Count<Medication>() > 0)
             {
-                return new StatusCodeResult(StatusCodes.Status409Conflict);
-            }
+                // DONT NEED IF API WORKS CORRECTLY - will have correct once and can search by current ID
+                //var currentMed = (from a in _context.Medication
+                //              where a.MedicationId == medicationPostView.MedicationId
+                //              select new Medication
+                //              {
+                //                  MedicationId = a.MedicationId,
+                //                  GenericName = a.GenericName,
+                //                  BrandName = a.BrandName,
+                //                  Dosage = a.Dosage,
+                //                  SideEffects = a.SideEffects,
+                //                  DrugInteractions = a.DrugInteractions
+                //              }).Last();
 
-            //Medication medication = new Medication()
-            //{
-            //    MedicationId = customerMed.MedicationId,
-            //    GenericName = customerMed.GenericName,
-            //    BrandName = customerMed.BrandName,
-            //    Dosage = customerMed.Dosage,
-            //    SideEffects = customerMed.SideEffects,
-            //    DrugInteractions = customerMed.DrugInteractions
-            //}
+                CustomerMed existingCustomerMed = new CustomerMed
+                {
+                    MedicationId = medicationPostView.MedicationId,
+                    CustomerId = medicationPostView.CustomerId,
+                    Usage = medicationPostView.Usage,
+                    Frequency = medicationPostView.Frequency,
+                    Notes = medicationPostView.Notes,
+                    ShowOnPublicView = medicationPostView.ShowOnPublicView,
+                    CustUserName = medicationPostView.CustUserName
+                };
 
-            _context.CustomerMed.Add(customerMed);
-            try
-            {
+                _context.CustomerMed.Add(existingCustomerMed);
                 _context.SaveChanges();
+
+                return Ok(medicationPostView);
             }
-            catch (DbUpdateException)
+            #endregion
+
+            else
             {
-                if (CustomerMedExists(customerMed.CustomerMedId))
+                Medication medication = new Medication
                 {
-                    return new StatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                else
+                    GenericName = medicationPostView.GenericName,
+                    BrandName = medicationPostView.BrandName,
+                    Dosage = medicationPostView.Dosage,
+                    SideEffects = medicationPostView.SideEffects,
+                    DrugInteractions = medicationPostView.DrugInteractions
+                };
+
+                _context.Medication.Add(medication);
+                _context.SaveChanges();
+
+                var newMed = currentMedication.Last();
+
+
+                CustomerMed customerMed = new CustomerMed
                 {
-                    throw;
+                    MedicationId = newMed.MedicationId,
+                    CustomerId = medicationPostView.CustomerId,
+                    Usage = medicationPostView.Usage,
+                    Frequency = medicationPostView.Frequency,
+                    Notes = medicationPostView.Notes,
+                    ShowOnPublicView = medicationPostView.ShowOnPublicView,
+                    CustUserName = medicationPostView.CustUserName
+                };
+
+                _context.CustomerMed.Add(customerMed);
+
+                try
+                {
+                    _context.SaveChanges();
                 }
+                catch (DbUpdateException)
+                {
+                    if (CustomerMedExists(customerMed.CustomerMedId))
+                    {
+                        return new StatusCodeResult(StatusCodes.Status409Conflict);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return Ok(medicationPostView);
             }
-            //return CreatedAtRoute("GetCustomerMed", new { id = customerMed.CustomerMedId }, customerMed);
-            return Ok(customerMed);
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]CustomerMed customerMed)
+        public IActionResult Put(int id, [FromBody] MedicationPostView medicationPostView)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != customerMed.CustomerMedId)
+            if (id != medicationPostView.MedicationId)
             {
                 return BadRequest();
             }
 
+            CustomerMed customerMed = new CustomerMed
+            {
+                MedicationId = medicationPostView.MedicationId,
+                CustomerId = medicationPostView.CustomerId,
+                Usage = medicationPostView.Usage,
+                Frequency = medicationPostView.Frequency,
+                Notes = medicationPostView.Notes,
+                ShowOnPublicView = medicationPostView.ShowOnPublicView,
+                CustUserName = medicationPostView.CustUserName
+            };
             _context.Entry(customerMed).State = EntityState.Modified;
+
+            Medication medication = new Medication
+            {
+                MedicationId = medicationPostView.MedicationId,
+                GenericName = medicationPostView.GenericName,
+                BrandName = medicationPostView.BrandName,
+                Dosage = medicationPostView.Dosage,
+                SideEffects = medicationPostView.SideEffects,
+                DrugInteractions = medicationPostView.DrugInteractions
+            };
+            _context.Entry(medication).State = EntityState.Modified;
 
             try
             {
@@ -150,7 +202,7 @@ namespace BasicMedicalHistory.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerMedExists(customerMed.CustomerMedId))
+                if (!MedicationExists(medicationPostView.MedicationId))
                 {
                     return NotFound();
                 }
@@ -184,9 +236,264 @@ namespace BasicMedicalHistory.Controllers
             return Ok(customerMed);
         }
 
+        private bool MedicationExists(int id)
+        {
+            return _context.Medication.Count(c => c.MedicationId == id) > 0;
+        }
         private bool CustomerMedExists(int id)
         {
             return _context.CustomerMed.Count(c => c.CustomerMedId == id) > 0;
         }
+
     }
 }
+
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Threading.Tasks;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.AspNetCore.Cors;
+//using System.Web.Http;
+//using BasicMedicalHistory.Models;
+//using Microsoft.AspNetCore.Http;
+//using Microsoft.EntityFrameworkCore;
+
+//namespace BasicMedicalHistory.Controllers
+//{
+//    [Route("api/[controller]")]
+//    [Produces("application/json")]
+//    [EnableCors("AllowDevelopmentEnvironment")]
+//    public class MedicationController : ApiController
+//    {
+//        private BmhContext _context;
+
+//        public MedicationController(BmhContext context)
+//        {
+//            _context = context;
+//        }
+
+//        // get medication by
+//        [HttpGet]
+//        public IActionResult GetMedication([FromQuery]int? id)
+//        {
+//            if (!ModelState.IsValid)
+//            {
+//                return BadRequest(ModelState);
+//            }
+
+//            IQueryable<Medication> medication = (from a in _context.Medication
+//                                                 where a.MedicationId == id
+//                                                 select new Medication
+//                                                 {
+//                                                     MedicationId = a.MedicationId,
+//                                                     GenericName = a.GenericName,
+//                                                     BrandName = a.BrandName,
+//                                                     Dosage = a.Dosage,
+//                                                     SideEffects = a.SideEffects,
+//                                                     DrugInteractions = a.DrugInteractions
+//                                                 });
+
+//            if (medication == null)
+//            {
+//                return NotFound();
+//            }
+
+//            return Ok(medication);
+//        }
+
+//        // POST api/values
+//        [HttpPost]
+//        public IActionResult Post([FromBody]MedicationPostView medicationPostView)
+//        {
+//            if (!ModelState.IsValid)
+//            {
+//                return BadRequest(ModelState);
+//            }
+
+//            var currentMedication = (from a in _context.Medication
+//                                     where a.BrandName == medicationPostView.BrandName
+//                                     && a.Dosage == medicationPostView.Dosage
+//                                     select new Medication
+//                                     {
+//                                         MedicationId = a.MedicationId,
+//                                         GenericName = a.GenericName,
+//                                         BrandName = a.BrandName,
+//                                         Dosage = a.Dosage,
+//                                         SideEffects = a.SideEffects,
+//                                         DrugInteractions = a.DrugInteractions
+//                                     });
+//            #region existingMedication
+
+//            //if medication exists, it will use current to create new Customer Medication
+//            if (currentMedication.Count<Medication>() > 0)
+//            {
+//                // DONT NEED IF API WORKS CORRECTLY - will have correct once and can search by current ID
+//                //var currentMed = (from a in _context.Medication
+//                //              where a.MedicationId == medicationPostView.MedicationId
+//                //              select new Medication
+//                //              {
+//                //                  MedicationId = a.MedicationId,
+//                //                  GenericName = a.GenericName,
+//                //                  BrandName = a.BrandName,
+//                //                  Dosage = a.Dosage,
+//                //                  SideEffects = a.SideEffects,
+//                //                  DrugInteractions = a.DrugInteractions
+//                //              }).Last();
+
+//                CustomerMed existingCustomerMed = new CustomerMed
+//                {
+//                    MedicationId = medicationPostView.MedicationId,
+//                    CustomerId = medicationPostView.CustomerId,
+//                    Usage = medicationPostView.Usage,
+//                    Frequency = medicationPostView.Frequency,
+//                    Notes = medicationPostView.Notes,
+//                    ShowOnPublicView = medicationPostView.ShowOnPublicView,
+//                    CustUserName = medicationPostView.CustUserName
+//                };
+
+//                _context.CustomerMed.Add(existingCustomerMed);
+//                _context.SaveChanges();
+
+//                return Ok(medicationPostView);
+//            }
+//            #endregion
+
+//            else
+//            {
+//                Medication medication = new Medication
+//                {
+//                    GenericName = medicationPostView.GenericName,
+//                    BrandName = medicationPostView.BrandName,
+//                    Dosage = medicationPostView.Dosage,
+//                    SideEffects = medicationPostView.SideEffects,
+//                    DrugInteractions = medicationPostView.DrugInteractions
+//                };
+
+//                _context.Medication.Add(medication);
+//                _context.SaveChanges();
+
+//                var newMed = currentMedication.Last();
+
+
+//                CustomerMed customerMed = new CustomerMed
+//                {
+//                    MedicationId = newMed.MedicationId,
+//                    CustomerId = medicationPostView.CustomerId,
+//                    Usage = medicationPostView.Usage,
+//                    Frequency = medicationPostView.Frequency,
+//                    Notes = medicationPostView.Notes,
+//                    ShowOnPublicView = medicationPostView.ShowOnPublicView,
+//                    CustUserName = medicationPostView.CustUserName
+//                };
+
+//                _context.CustomerMed.Add(customerMed);
+
+//                try
+//                {
+//                    _context.SaveChanges();
+//                }
+//                catch (DbUpdateException)
+//                {
+//                    if (CustomerMedExists(customerMed.CustomerMedId))
+//                    {
+//                        return new StatusCodeResult(StatusCodes.Status409Conflict);
+//                    }
+//                    else
+//                    {
+//                        throw;
+//                    }
+//                }
+
+//                return Ok(medicationPostView);
+//            }
+//        }
+
+//        // PUT api/values/5
+//        [HttpPut("{id}")]
+//        public IActionResult Put(int id, [FromBody] MedicationPostView medicationPostView)
+//        {
+//            if (!ModelState.IsValid)
+//            {
+//                return BadRequest(ModelState);
+//            }
+
+//            if (id != medicationPostView.MedicationId)
+//            {
+//                return BadRequest();
+//            }
+
+//            CustomerMed customerMed = new CustomerMed
+//            {
+//                MedicationId = medicationPostView.MedicationId,
+//                CustomerId = medicationPostView.CustomerId,
+//                Usage = medicationPostView.Usage,
+//                Frequency = medicationPostView.Frequency,
+//                Notes = medicationPostView.Notes,
+//                ShowOnPublicView = medicationPostView.ShowOnPublicView,
+//                CustUserName = medicationPostView.CustUserName
+//            };
+
+//            select new Medication
+//            {
+//                MedicationId = a.MedicationId,
+//                GenericName = a.GenericName,
+//                BrandName = a.BrandName,
+//                Dosage = a.Dosage,
+//                SideEffects = a.SideEffects,
+//                DrugInteractions = a.DrugInteractions
+//            });
+
+
+//            _context.Entry(medicationPostView).State = EntityState.Modified;
+
+//            try
+//            {
+//                _context.SaveChanges();
+//            }
+//            catch (DbUpdateConcurrencyException)
+//            {
+//                if (!MedicationExists(medicationPostView.MedicationId))
+//                {
+//                    return NotFound();
+//                }
+//                else
+//                {
+//                    throw;
+//                }
+//            }
+
+//            return new StatusCodeResult(StatusCodes.Status204NoContent);
+//        }
+
+//        // DELETE api/values/5
+//        [HttpDelete("{id}")]
+//        public IActionResult Delete(int id)
+//        {
+//            if (!ModelState.IsValid)
+//            {
+//                return BadRequest(ModelState);
+//            }
+
+//            Medication medication = _context.Medication.Single(c => c.MedicationId == id);
+//            if (medication == null)
+//            {
+//                return NotFound();
+//            }
+
+//            _context.Medication.Remove(medication);
+//            _context.SaveChanges();
+
+//            return Ok(medication);
+//        }
+
+//        private bool MedicationExists(int id)
+//        {
+//            return _context.Medication.Count(c => c.MedicationId == id) > 0;
+//        }
+//        private bool CustomerMedExists(int id)
+//        {
+//            return _context.CustomerMed.Count(c => c.CustomerMedId == id) > 0;
+//        }
+
+    

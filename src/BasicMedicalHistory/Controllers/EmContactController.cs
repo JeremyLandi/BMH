@@ -25,32 +25,59 @@ namespace BasicMedicalHistory.Controllers
 
         // get emContact by
         [HttpGet]
-        public IActionResult GetEmContact([FromQuery]string custUserName)
+        public IActionResult GetEmContact([FromQuery]int? id, [FromQuery] string token, [FromQuery]string custUserName)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            IQueryable<EmContact> emContact = (from a in _context.EmContact
-                                               where a.CustUserName == custUserName
-                                               select new EmContact
-                                                {
-                                                    EmContactId = a.EmContactId,
-                                                    EmContactName = a.EmContactName,
-                                                    Relationship = a.Relationship,
-                                                    EmergencyContactPhone = a.EmergencyContactPhone,
-                                                    CustomerId = a.CustomerId
-                                                });
-
-            if (emContact == null)
+            //checks if they are logged in
+            if (token == null)
             {
-                return NotFound();
+                IQueryable<EmContact> emContact = (from a in _context.EmContact
+                                                   where a.CustUserName == custUserName
+                                                   && a.ShowOnPublicView == false
+                                                   select new EmContact
+                                                   {
+                                                       EmContactId = a.EmContactId,
+                                                       EmContactName = a.EmContactName,
+                                                       Relationship = a.Relationship,
+                                                       EmergencyContactPhone = a.EmergencyContactPhone,
+                                                       CustomerId = a.CustomerId
+                                                   });
+                if (emContact == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(emContact);
             }
 
-            return Ok(emContact);
-           
+            if (token.Count() > 20)
+            {
+                IQueryable<EmContact> emContact = (from a in _context.EmContact
+                                                   where a.CustomerId == id
+                                                   select new EmContact
+                                                   {
+                                                       EmContactId = a.EmContactId,
+                                                       EmContactName = a.EmContactName,
+                                                       Relationship = a.Relationship,
+                                                       EmergencyContactPhone = a.EmergencyContactPhone,
+                                                       CustomerId = a.CustomerId,
+                                                       ShowOnPublicView = a.ShowOnPublicView,
+                                                       CustUserName = a.CustUserName
+                                                   });
+                if (emContact == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(emContact);
+            }
+            return Ok();
         }
+
 
         // POST api/values
         [HttpPost]
