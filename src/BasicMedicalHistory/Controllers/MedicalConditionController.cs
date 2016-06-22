@@ -42,7 +42,8 @@ namespace BasicMedicalHistory.Controllers
                                                                      MedicalConditionId = a.MedicalConditionId,
                                                                      MedicalConditionName = a.MedicalConditionName,
                                                                      Description = a.Description,
-                                                                     CustomerId = a.CustomerId
+                                                                     CustomerId = a.CustomerId,
+                                                                     CustUserName = a.CustUserName
                                                                  });
 
                 if (medicalCondition == null)
@@ -62,7 +63,9 @@ namespace BasicMedicalHistory.Controllers
                                                                      MedicalConditionId = a.MedicalConditionId,
                                                                      MedicalConditionName = a.MedicalConditionName,
                                                                      Description = a.Description,
-                                                                     CustomerId = a.CustomerId
+                                                                     CustomerId = a.CustomerId,
+                                                                     ShowOnPublicView = a.ShowOnPublicView,
+                                                                     CustUserName = a.CustUserName
                                                                  });
 
                 if (medicalCondition == null)

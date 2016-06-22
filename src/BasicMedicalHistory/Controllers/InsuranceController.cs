@@ -73,7 +73,9 @@ namespace BasicMedicalHistory.Controllers
                                                        Deducatable = a.Deducatable,
                                                        Phone = a.Phone,
                                                        Notes = a.Notes,
-                                                       CustomerId = a.CustomerId
+                                                       CustomerId = a.CustomerId,
+                                                       ShowOnPublicView = a.ShowOnPublicView,
+                                                       CustUserName = a.CustUserName
                                                    });
 
                 if (insurance == null)
