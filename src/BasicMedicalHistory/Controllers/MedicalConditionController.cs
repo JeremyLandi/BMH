@@ -36,7 +36,7 @@ namespace BasicMedicalHistory.Controllers
             {
                 IQueryable<MedicalCondition> medicalCondition = (from a in _context.MedicalCondition
                                                                  where a.CustUserName == custUserName
-                                                                 && a.ShowOnPublicView == false
+                                                                 && a.ShowOnPublicView == true
                                                                  select new MedicalCondition
                                                                  {
                                                                      MedicalConditionId = a.MedicalConditionId,

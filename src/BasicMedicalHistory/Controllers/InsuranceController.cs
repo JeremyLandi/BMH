@@ -36,7 +36,7 @@ namespace BasicMedicalHistory.Controllers
             {
                 IQueryable<Insurance> insurance = (from a in _context.Insurance
                                                    where a.CustUserName == custUserName
-                                                   && a.ShowOnPublicView == false
+                                                   && a.ShowOnPublicView == true
                                                    select new Insurance
                                                    {
                                                        InsuranceId = a.InsuranceId,

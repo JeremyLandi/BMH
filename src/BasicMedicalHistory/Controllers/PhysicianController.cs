@@ -26,7 +26,7 @@ namespace BasicMedicalHistory.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IActionResult GetAllergy([FromQuery]int? id, [FromQuery] string token, [FromQuery]string custUserName)
+        public IActionResult GetPhysician([FromQuery]int? id, [FromQuery] string token, [FromQuery]string custUserName)
         {
             if (!ModelState.IsValid)
             {
@@ -38,7 +38,7 @@ namespace BasicMedicalHistory.Controllers
             {
                 IQueryable<Physician> physician = (from a in _context.Physician
                                                    where a.CustUserName == custUserName
-                                                   && a.ShowOnPublicView == false
+                                                   && a.ShowOnPublicView == true
                                                    select new Physician
                                                    {
                                                        PhysicianId = a.PhysicianId,

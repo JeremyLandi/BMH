@@ -26,32 +26,76 @@ namespace BasicMedicalHistory.Controllers
         // get customerMed by
         [HttpGet]
         public IActionResult GetCustomerMed([FromQuery]int? id, [FromQuery] string token, [FromQuery]string custUserName)
-        { 
-           if (!ModelState.IsValid)
+        {
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            IQueryable<Medication> medication = (from a in _context.Medication
-                                                 where a.MedicationId == id
-                                                 select new Medication
-                                                 {
-                                                     MedicationId = a.MedicationId,
-                                                     GenericName = a.GenericName,
-                                                     BrandName = a.BrandName,
-                                                     Dosage = a.Dosage,
-                                                     SideEffects = a.SideEffects,
-                                                     DrugInteractions = a.DrugInteractions
-                                                 });
+            //checks if they are logged in
+            if (token == null)
+            {
+                IQueryable<MedicationPostView> medicationPostView = (from a in _context.Medication
+                                                                     join b in _context.CustomerMed
+                                                                     on a.MedicationId equals b.MedicationId
+                                                                     where b.CustUserName == custUserName
+                                                                     && b.ShowOnPublicView == true
+                                                                     select new MedicationPostView
+                                                                     {
+                                                                         MedicationId = a.MedicationId,
+                                                                         GenericName = a.GenericName,
+                                                                         BrandName = a.BrandName,
+                                                                         Dosage = a.Dosage,
+                                                                         SideEffects = a.SideEffects,
+                                                                         DrugInteractions = a.DrugInteractions,
+                                                                         CustomerMedId = b.CustomerMedId,
+                                                                         CustomerId = b.CustomerId,
+                                                                         CustUserName = b.CustUserName,
+                                                                         Usage = b.Usage,
+                                                                         Frequency = b.Frequency,
+                                                                         Notes = b.Notes,
+                                                                         ShowOnPublicView = b.ShowOnPublicView
+                                                                     });
 
-                    if (medication == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return Ok(medication);
+                if (medicationPostView == null)
+                {
+                    return NotFound();
                 }
 
+                return Ok(medicationPostView);
+            }
+
+            if (token.Count() > 20)
+            {
+                IQueryable<MedicationPostView> medicationPostView = (from a in _context.Medication
+                                                                     join b in _context.CustomerMed
+                                                                     on a.MedicationId equals b.MedicationId
+                                                                     where b.CustomerId == id
+                                                                     select new MedicationPostView
+                                                                     {
+                                                                         MedicationId = a.MedicationId,
+                                                                         GenericName = a.GenericName,
+                                                                         BrandName = a.BrandName,
+                                                                         Dosage = a.Dosage,
+                                                                         SideEffects = a.SideEffects,
+                                                                         DrugInteractions = a.DrugInteractions,
+                                                                         CustomerMedId = b.CustomerMedId,
+                                                                         CustomerId = b.CustomerId,
+                                                                         CustUserName = b.CustUserName,
+                                                                         Usage = b.Usage,
+                                                                         Frequency = b.Frequency,
+                                                                         Notes = b.Notes,
+                                                                         ShowOnPublicView = b.ShowOnPublicView
+                                                                     });
+                if (medicationPostView == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(medicationPostView);
+            }
+            return Ok();
+        }
         // POST api/values
         [HttpPost]
         public IActionResult Post([FromBody]MedicationPostView medicationPostView)
@@ -168,13 +212,9 @@ namespace BasicMedicalHistory.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != medicationPostView.MedicationId)
-            {
-                return BadRequest();
-            }
-
             CustomerMed customerMed = new CustomerMed
             {
+                CustomerMedId = medicationPostView.CustomerMedId,
                 MedicationId = medicationPostView.MedicationId,
                 CustomerId = medicationPostView.CustomerId,
                 Usage = medicationPostView.Usage,
@@ -183,7 +223,6 @@ namespace BasicMedicalHistory.Controllers
                 ShowOnPublicView = medicationPostView.ShowOnPublicView,
                 CustUserName = medicationPostView.CustUserName
             };
-            _context.Entry(customerMed).State = EntityState.Modified;
 
             Medication medication = new Medication
             {
@@ -194,7 +233,9 @@ namespace BasicMedicalHistory.Controllers
                 SideEffects = medicationPostView.SideEffects,
                 DrugInteractions = medicationPostView.DrugInteractions
             };
+
             _context.Entry(medication).State = EntityState.Modified;
+            _context.Entry(customerMed).State = EntityState.Modified;
 
             try
             {
@@ -223,7 +264,7 @@ namespace BasicMedicalHistory.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             CustomerMed customerMed = _context.CustomerMed.Single(c => c.CustomerMedId == id);
             if (customerMed == null)
             {

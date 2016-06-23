@@ -7,6 +7,7 @@ namespace BasicMedicalHistory.Models
 {
     public class MedicationPostView
     {
+        
         public int CustomerMedId { get; set; }
         public int CustomerId { get; set; }
         public string CustUserName { get; set; }
