@@ -37,7 +37,7 @@ namespace BasicMedicalHistory.Controllers
             {
                 IQueryable<Allergy> allergy = (from a in _context.Allergy
                                                where a.CustUserName == custUserName
-                                               && a.ShowOnPublicView == false
+                                               && a.ShowOnPublicView == true
                                                select new Allergy
                                                {
                                                    AllergyId = a.AllergyId,

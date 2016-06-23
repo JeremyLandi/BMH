@@ -37,7 +37,7 @@ namespace BasicMedicalHistory.Controllers
             {
                 IQueryable<EmContact> emContact = (from a in _context.EmContact
                                                    where a.CustUserName == custUserName
-                                                   && a.ShowOnPublicView == false
+                                                   && a.ShowOnPublicView == true
                                                    select new EmContact
                                                    {
                                                        EmContactId = a.EmContactId,
