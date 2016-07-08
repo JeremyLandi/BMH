@@ -16,9 +16,7 @@ namespace BasicMedicalHistory.Controllers
     [EnableCors("AllowDevelopmentEnvironment")]
     public class CustomerController : ApiController
     {
-
         private BmhContext _context;
-
         public CustomerController(BmhContext context)
         {
             _context = context;
@@ -26,16 +24,15 @@ namespace BasicMedicalHistory.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IActionResult GetCustomer([FromQuery]string custUserName)
+        public IActionResult GetCustomer([FromQuery]string email)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            IQueryable<Customer> customer = (from c in _context.Customer
                                              //custUserName is for public
-                                             where c.CustUserName == custUserName
+            IQueryable<Customer> customer = (from c in _context.Customer
+                                             where c.CustEmail == email
                                              select new Customer
                                             {
                                                 //meta data
@@ -62,12 +59,10 @@ namespace BasicMedicalHistory.Controllers
                                                 Height = c.Height,
                                                 Weight = c.Weight,
                                             });
-
             if (customer == null)
             {
                 return NotFound();
             }
-
             return Ok(customer);
         }
 
@@ -90,7 +85,6 @@ namespace BasicMedicalHistory.Controllers
                 return new StatusCodeResult(StatusCodes.Status409Conflict);
             }
 
-            //
             _context.Customer.Add(customer);
             try
             {
@@ -107,7 +101,6 @@ namespace BasicMedicalHistory.Controllers
                     throw;
                 }
             }
-            //return CreatedAtRoute("GetCustomer", new { id = customer.CustomerId }, customer);
             return Ok(customer);
         }
 
@@ -142,7 +135,6 @@ namespace BasicMedicalHistory.Controllers
                     throw;
                 }
             }
-
             return new StatusCodeResult(StatusCodes.Status204NoContent);
         }
 
