@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using System.Web.Http;
@@ -17,13 +14,11 @@ namespace BasicMedicalHistory.Controllers
     public class EmContactController : ApiController
     {
         private BmhContext _context;
-
         public EmContactController(BmhContext context)
         {
             _context = context;
         }
 
-        // get emContact by
         [HttpGet]
         public IActionResult GetEmContact([FromQuery]int? id, [FromQuery] string token, [FromQuery]string custUserName)
         {
@@ -78,7 +73,6 @@ namespace BasicMedicalHistory.Controllers
             return Ok();
         }
 
-
         // POST api/values
         [HttpPost]
         public IActionResult Post([FromBody]EmContact emContact)
@@ -115,7 +109,6 @@ namespace BasicMedicalHistory.Controllers
                     throw;
                 }
             }
-            //return CreatedAtRoute("GetEmContact", new { id = emContact.EmContactId }, emContact);
             return Ok(emContact);
         }
 
@@ -150,7 +143,6 @@ namespace BasicMedicalHistory.Controllers
                     throw;
                 }
             }
-
             return new StatusCodeResult(StatusCodes.Status204NoContent);
         }
 

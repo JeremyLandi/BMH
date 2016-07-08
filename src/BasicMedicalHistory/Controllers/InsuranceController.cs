@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Web.Http;
 using Microsoft.AspNetCore.Cors;
@@ -16,9 +13,7 @@ namespace BasicMedicalHistory.Controllers
     [EnableCors("AllowDevelopmentEnvironment")]
     public class InsuranceController : ApiController
     {
-
         private BmhContext _context;
-
         public InsuranceController(BmhContext context)
         {
             _context = context;
@@ -32,6 +27,7 @@ namespace BasicMedicalHistory.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             if (token == null)
             {
                 IQueryable<Insurance> insurance = (from a in _context.Insurance
@@ -49,15 +45,12 @@ namespace BasicMedicalHistory.Controllers
                                                        Notes = a.Notes,
                                                        CustomerId = a.CustomerId
                                                    });
-
                 if (insurance == null)
                 {
                     return NotFound();
                 }
-
                 return Ok(insurance);
             }
-
 
             if (token.Count() > 20)
             {
@@ -77,15 +70,12 @@ namespace BasicMedicalHistory.Controllers
                                                        ShowOnPublicView = a.ShowOnPublicView,
                                                        CustUserName = a.CustUserName
                                                    });
-
                 if (insurance == null)
                 {
                     return NotFound();
                 }
-
                 return Ok(insurance);
             }
-
             return Ok();
         }
 
@@ -108,7 +98,6 @@ namespace BasicMedicalHistory.Controllers
             {
                 return new StatusCodeResult(StatusCodes.Status409Conflict);
             }
-
             _context.Insurance.Add(insurance);
             try
             {
@@ -125,7 +114,6 @@ namespace BasicMedicalHistory.Controllers
                     throw;
                 }
             }
-            //return CreatedAtRoute("GetInsurance", new { id = insurance.InsuranceId }, insurance);
             return Ok(insurance);
         }
 
@@ -160,7 +148,6 @@ namespace BasicMedicalHistory.Controllers
                     throw;
                 }
             }
-
             return new StatusCodeResult(StatusCodes.Status204NoContent);
         }
 

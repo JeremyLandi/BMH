@@ -17,13 +17,12 @@ namespace BasicMedicalHistory.Controllers
     public class AllergyController : ApiController
     {
         private BmhContext _context;
-
         public AllergyController(BmhContext context)
         {
             _context = context;
         }
 
-        //// GET: api/values
+        // GET: api/values
         [HttpGet]
         public IActionResult GetPrivateAllergy([FromQuery]int? id, [FromQuery] string token, [FromQuery]string custUserName)
         {
@@ -50,7 +49,6 @@ namespace BasicMedicalHistory.Controllers
                 {
                     return NotFound();
                 }
-
                 return Ok(allergy);
             }
 
@@ -79,7 +77,6 @@ namespace BasicMedicalHistory.Controllers
             return Ok();
         }
 
-
         // POST api/values
         [HttpPost]
         public IActionResult Post([FromBody]Allergy allergy)
@@ -99,8 +96,9 @@ namespace BasicMedicalHistory.Controllers
             {
                 return new StatusCodeResult(StatusCodes.Status409Conflict);
             }
-            allergy.ShowOnPublicView = true;
+
             _context.Allergy.Add(allergy);
+
             try
             {
                 _context.SaveChanges();
@@ -116,7 +114,6 @@ namespace BasicMedicalHistory.Controllers
                     throw;
                 }
             }
-            //return CreatedAtRoute("GetAllergy", new { id = allergy.AllergyId }, allergy);
             return Ok(allergy);
         }
 
@@ -151,7 +148,6 @@ namespace BasicMedicalHistory.Controllers
                     throw;
                 }
             }
-
             return new StatusCodeResult(StatusCodes.Status204NoContent);
         }
 
@@ -165,6 +161,7 @@ namespace BasicMedicalHistory.Controllers
             }
 
             Allergy allergy = _context.Allergy.Single(c => c.AllergyId == id);
+
             if (allergy == null)
             {
                 return NotFound();

@@ -17,7 +17,6 @@ namespace BasicMedicalHistory.Controllers
     public class MedicalConditionController : ApiController
     {
         private BmhContext _context;
-
         public MedicalConditionController(BmhContext context)
         {
             _context = context;
@@ -45,7 +44,6 @@ namespace BasicMedicalHistory.Controllers
                                                                      CustomerId = a.CustomerId,
                                                                      CustUserName = a.CustUserName
                                                                  });
-
                 if (medicalCondition == null)
                 {
                     return NotFound();
@@ -75,9 +73,7 @@ namespace BasicMedicalHistory.Controllers
 
                 return Ok(medicalCondition);
             }
-
             return Ok();
-
         }
 
         // POST api/values
@@ -116,7 +112,6 @@ namespace BasicMedicalHistory.Controllers
                     throw;
                 }
             }
-            //return CreatedAtRoute("GetMedicalCondition", new { id = medicalCondition.MedicalConditionId }, medicalCondition);
             return Ok(medicalCondition);
         }
 

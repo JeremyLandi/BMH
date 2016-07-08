@@ -127,7 +127,6 @@ namespace BasicMedicalHistory.Controllers
                     throw;
                 }
             }
-            //return CreatedAtRoute("GetPhysician", new { id = physician.PhysicianId }, physician);
             return Ok(physician);
         }
 
